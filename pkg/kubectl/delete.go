@@ -37,7 +37,7 @@ import (
 	batchclient "k8s.io/kubernetes/pkg/client/clientset_generated/internalclientset/typed/batch/internalversion"
 	coreclient "k8s.io/kubernetes/pkg/client/clientset_generated/internalclientset/typed/core/internalversion"
 	extensionsclient "k8s.io/kubernetes/pkg/client/clientset_generated/internalclientset/typed/extensions/internalversion"
-	deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
+	//deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
 )
 
 const (
@@ -86,10 +86,10 @@ func ReaperFor(kind schema.GroupKind, c internalclientset.Interface) (Reaper, er
 
 	case apps.Kind("StatefulSet"):
 		return &StatefulSetReaper{c.Apps(), c.Core(), Interval, Timeout}, nil
-
-	case extensions.Kind("Deployment"), apps.Kind("Deployment"):
-		return &DeploymentReaper{c.Extensions(), c.Extensions(), Interval, Timeout}, nil
-
+		/*
+			case extensions.Kind("Deployment"), apps.Kind("Deployment"):
+				return &DeploymentReaper{c.Extensions(), c.Extensions(), Interval, Timeout}, nil
+		*/
 	}
 	return nil, &NoSuchReaperError{kind}
 }
@@ -389,6 +389,7 @@ func (reaper *JobReaper) Stop(namespace, name string, timeout time.Duration, gra
 	return jobs.Delete(name, deleteOptions)
 }
 
+/*
 func (reaper *DeploymentReaper) Stop(namespace, name string, timeout time.Duration, gracePeriod *metav1.DeleteOptions) error {
 	deployments := reaper.dClient.Deployments(namespace)
 	rsReaper := &ReplicaSetReaper{reaper.rsClient, reaper.pollInterval, reaper.timeout}
@@ -476,7 +477,7 @@ func (reaper *DeploymentReaper) updateDeploymentWithRetries(namespace, name stri
 	})
 	return deployment, err
 }
-
+*/
 func (reaper *PodReaper) Stop(namespace, name string, timeout time.Duration, gracePeriod *metav1.DeleteOptions) error {
 	pods := reaper.client.Pods(namespace)
 	_, err := pods.Get(name, metav1.GetOptions{})

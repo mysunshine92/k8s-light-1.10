@@ -26,7 +26,7 @@ import (
 	clientappsv1beta1 "k8s.io/client-go/kubernetes/typed/apps/v1beta1"
 	clientextensionsv1beta1 "k8s.io/client-go/kubernetes/typed/extensions/v1beta1"
 	"k8s.io/kubernetes/pkg/apis/apps"
-	"k8s.io/kubernetes/pkg/controller/deployment/util"
+	//"k8s.io/kubernetes/pkg/controller/deployment/util"
 )
 
 // StatusViewer provides an interface for resources that have rollout status.
@@ -37,8 +37,10 @@ type StatusViewer interface {
 // StatusViewerFor returns a StatusViewer for the resource specified by kind.
 func StatusViewerFor(kind schema.GroupKind, c kubernetes.Interface) (StatusViewer, error) {
 	switch kind {
-	case extensionsv1beta1.SchemeGroupVersion.WithKind("Deployment").GroupKind(), apps.Kind("Deployment"):
-		return &DeploymentStatusViewer{c.ExtensionsV1beta1()}, nil
+	/*
+		case extensionsv1beta1.SchemeGroupVersion.WithKind("Deployment").GroupKind(), apps.Kind("Deployment"):
+			return &DeploymentStatusViewer{c.ExtensionsV1beta1()}, nil
+	*/
 	case extensionsv1beta1.SchemeGroupVersion.WithKind("DaemonSet").GroupKind(), apps.Kind("DaemonSet"):
 		return &DaemonSetStatusViewer{c.ExtensionsV1beta1()}, nil
 	case apps.Kind("StatefulSet"):
@@ -47,11 +49,12 @@ func StatusViewerFor(kind schema.GroupKind, c kubernetes.Interface) (StatusViewe
 	return nil, fmt.Errorf("no status viewer has been implemented for %v", kind)
 }
 
+/*
 // DeploymentStatusViewer implements the StatusViewer interface.
 type DeploymentStatusViewer struct {
 	c clientextensionsv1beta1.DeploymentsGetter
 }
-
+*/
 // DaemonSetStatusViewer implements the StatusViewer interface.
 type DaemonSetStatusViewer struct {
 	c clientextensionsv1beta1.DaemonSetsGetter
@@ -62,6 +65,7 @@ type StatefulSetStatusViewer struct {
 	c clientappsv1beta1.StatefulSetsGetter
 }
 
+/*
 // Status returns a message describing deployment status, and a bool value indicating if the status is considered done.
 func (s *DeploymentStatusViewer) Status(namespace, name string, revision int64) (string, bool, error) {
 	deployment, err := s.c.Deployments(namespace).Get(name, metav1.GetOptions{})
@@ -95,7 +99,7 @@ func (s *DeploymentStatusViewer) Status(namespace, name string, revision int64) 
 	}
 	return fmt.Sprintf("Waiting for deployment spec update to be observed...\n"), false, nil
 }
-
+*/
 // Status returns a message describing daemon set status, and a bool value indicating if the status is considered done.
 func (s *DaemonSetStatusViewer) Status(namespace, name string, revision int64) (string, bool, error) {
 	//ignoring revision as DaemonSets does not have history yet

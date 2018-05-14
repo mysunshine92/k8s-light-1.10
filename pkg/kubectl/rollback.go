@@ -19,30 +19,21 @@ package kubectl
 import (
 	"bytes"
 	"fmt"
-	"os"
-	"os/signal"
 	"sort"
-	"syscall"
 
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/api/core/v1"
-	extv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/meta"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	apiv1 "k8s.io/kubernetes/pkg/apis/core/v1"
-	"k8s.io/kubernetes/pkg/apis/extensions"
 	"k8s.io/kubernetes/pkg/controller/daemon"
-	deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
+	//deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
 	"k8s.io/kubernetes/pkg/controller/statefulset"
 	kapps "k8s.io/kubernetes/pkg/kubectl/apps"
-	sliceutil "k8s.io/kubernetes/pkg/kubectl/util/slice"
 	printersinternal "k8s.io/kubernetes/pkg/printers/internalversion"
 )
 
@@ -61,10 +52,11 @@ type RollbackVisitor struct {
 	result    Rollbacker
 }
 
+/*
 func (v *RollbackVisitor) VisitDeployment(elem kapps.GroupKindElement) {
 	v.result = &DeploymentRollbacker{v.clientset}
 }
-
+*/
 func (v *RollbackVisitor) VisitStatefulSet(kind kapps.GroupKindElement) {
 	v.result = &StatefulSetRollbacker{v.clientset}
 }
@@ -81,16 +73,17 @@ func (v *RollbackVisitor) VisitCronJob(kind kapps.GroupKindElement)             
 
 // RollbackerFor returns an implementation of Rollbacker interface for the given schema kind
 func RollbackerFor(kind schema.GroupKind, c kubernetes.Interface) (Rollbacker, error) {
-	elem := kapps.GroupKindElement(kind)
+	//elem := kapps.GroupKindElement(kind)
 	visitor := &RollbackVisitor{
 		clientset: c,
 	}
+	/*
+		err := elem.Accept(visitor)
 
-	err := elem.Accept(visitor)
-
-	if err != nil {
-		return nil, fmt.Errorf("error retrieving rollbacker for %q, %v", kind.String(), err)
-	}
+		if err != nil {
+			return nil, fmt.Errorf("error retrieving rollbacker for %q, %v", kind.String(), err)
+		}
+	*/
 
 	if visitor.result == nil {
 		return nil, fmt.Errorf("no rollbacker has been implemented for %q", kind)
@@ -99,6 +92,7 @@ func RollbackerFor(kind schema.GroupKind, c kubernetes.Interface) (Rollbacker, e
 	return visitor.result, nil
 }
 
+/*
 type DeploymentRollbacker struct {
 	c kubernetes.Interface
 }
@@ -140,7 +134,8 @@ func (r *DeploymentRollbacker) Rollback(obj runtime.Object, updatedAnnotations m
 	result = watchRollbackEvent(watch)
 	return result, err
 }
-
+*/
+/*
 // watchRollbackEvent watches for rollback events and returns rollback result
 func watchRollbackEvent(w watch.Interface) string {
 	signals := make(chan os.Signal, 1)
@@ -166,7 +161,8 @@ func watchRollbackEvent(w watch.Interface) string {
 		}
 	}
 }
-
+*/
+/*
 // isRollbackEvent checks if the input event is about rollback, and returns true and
 // related result string back if it is.
 func isRollbackEvent(e *api.Event) (bool, string) {
@@ -243,7 +239,7 @@ func simpleDryRun(deployment *extensions.Deployment, c kubernetes.Interface, toR
 	printersinternal.DescribePodTemplate(internalTemplate, w)
 	return buf.String(), nil
 }
-
+*/
 type DaemonSetRollbacker struct {
 	c kubernetes.Interface
 }

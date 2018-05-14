@@ -34,9 +34,9 @@ import (
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 	"k8s.io/client-go/kubernetes"
 	clientappsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
+	//deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	apiv1 "k8s.io/kubernetes/pkg/apis/core/v1"
-	deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
 	kapps "k8s.io/kubernetes/pkg/kubectl/apps"
 	sliceutil "k8s.io/kubernetes/pkg/kubectl/util/slice"
 	printersinternal "k8s.io/kubernetes/pkg/printers/internalversion"
@@ -56,10 +56,11 @@ type HistoryVisitor struct {
 	result    HistoryViewer
 }
 
+/*
 func (v *HistoryVisitor) VisitDeployment(elem kapps.GroupKindElement) {
 	v.result = &DeploymentHistoryViewer{v.clientset}
 }
-
+*/
 func (v *HistoryVisitor) VisitStatefulSet(kind kapps.GroupKindElement) {
 	v.result = &StatefulSetHistoryViewer{v.clientset}
 }
@@ -76,18 +77,18 @@ func (v *HistoryVisitor) VisitCronJob(kind kapps.GroupKindElement)              
 
 // HistoryViewerFor returns an implementation of HistoryViewer interface for the given schema kind
 func HistoryViewerFor(kind schema.GroupKind, c kubernetes.Interface) (HistoryViewer, error) {
-	elem := kapps.GroupKindElement(kind)
+	//elem := kapps.GroupKindElement(kind)
 	visitor := &HistoryVisitor{
 		clientset: c,
 	}
+	/*
+		// Determine which HistoryViewer we need here
+		err := elem.Accept(visitor)
 
-	// Determine which HistoryViewer we need here
-	err := elem.Accept(visitor)
-
-	if err != nil {
-		return nil, fmt.Errorf("error retrieving history for %q, %v", kind.String(), err)
-	}
-
+		if err != nil {
+			return nil, fmt.Errorf("error retrieving history for %q, %v", kind.String(), err)
+		}
+	*/
 	if visitor.result == nil {
 		return nil, fmt.Errorf("no history viewer has been implemented for %q", kind.String())
 	}
@@ -95,6 +96,7 @@ func HistoryViewerFor(kind schema.GroupKind, c kubernetes.Interface) (HistoryVie
 	return visitor.result, nil
 }
 
+/*
 type DeploymentHistoryViewer struct {
 	c kubernetes.Interface
 }
@@ -165,7 +167,7 @@ func (h *DeploymentHistoryViewer) ViewHistory(namespace, name string, revision i
 		return nil
 	})
 }
-
+*/
 func printTemplate(template *v1.PodTemplateSpec) (string, error) {
 	buf := bytes.NewBuffer([]byte{})
 	internalTemplate := &api.PodTemplateSpec{}

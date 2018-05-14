@@ -66,7 +66,7 @@ import (
 	storageutil "k8s.io/kubernetes/pkg/apis/storage/util"
 	clientset "k8s.io/kubernetes/pkg/client/clientset_generated/internalclientset"
 	coreclient "k8s.io/kubernetes/pkg/client/clientset_generated/internalclientset/typed/core/internalversion"
-	deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
+	//deploymentutil "k8s.io/kubernetes/pkg/controller/deployment/util"
 	"k8s.io/kubernetes/pkg/fieldpath"
 	"k8s.io/kubernetes/pkg/printers"
 	"k8s.io/kubernetes/pkg/registry/rbac/validation"
@@ -139,17 +139,17 @@ func describerMap(c clientset.Interface) map[schema.GroupKind]printers.Describer
 		api.Kind("ConfigMap"):             &ConfigMapDescriber{c},
 		api.Kind("PriorityClass"):         &PriorityClassDescriber{c},
 
-		extensions.Kind("ReplicaSet"):                  &ReplicaSetDescriber{c},
-		extensions.Kind("NetworkPolicy"):               &NetworkPolicyDescriber{c},
-		extensions.Kind("PodSecurityPolicy"):           &PodSecurityPolicyDescriber{c},
-		autoscaling.Kind("HorizontalPodAutoscaler"):    &HorizontalPodAutoscalerDescriber{c},
-		extensions.Kind("DaemonSet"):                   &DaemonSetDescriber{c},
-		extensions.Kind("Deployment"):                  &DeploymentDescriber{c, versionedExtensionsClientV1beta1(c)},
-		extensions.Kind("Ingress"):                     &IngressDescriber{c},
-		batch.Kind("Job"):                              &JobDescriber{c},
-		batch.Kind("CronJob"):                          &CronJobDescriber{c},
-		apps.Kind("StatefulSet"):                       &StatefulSetDescriber{c},
-		apps.Kind("Deployment"):                        &DeploymentDescriber{c, versionedExtensionsClientV1beta1(c)},
+		extensions.Kind("ReplicaSet"):               &ReplicaSetDescriber{c},
+		extensions.Kind("NetworkPolicy"):            &NetworkPolicyDescriber{c},
+		extensions.Kind("PodSecurityPolicy"):        &PodSecurityPolicyDescriber{c},
+		autoscaling.Kind("HorizontalPodAutoscaler"): &HorizontalPodAutoscalerDescriber{c},
+		extensions.Kind("DaemonSet"):                &DaemonSetDescriber{c},
+		//extensions.Kind("Deployment"):                  &DeploymentDescriber{c, versionedExtensionsClientV1beta1(c)},
+		extensions.Kind("Ingress"): &IngressDescriber{c},
+		batch.Kind("Job"):          &JobDescriber{c},
+		batch.Kind("CronJob"):      &CronJobDescriber{c},
+		apps.Kind("StatefulSet"):   &StatefulSetDescriber{c},
+		//apps.Kind("Deployment"):                        &DeploymentDescriber{c, versionedExtensionsClientV1beta1(c)},
 		apps.Kind("DaemonSet"):                         &DaemonSetDescriber{c},
 		apps.Kind("ReplicaSet"):                        &ReplicaSetDescriber{c},
 		certificates.Kind("CertificateSigningRequest"): &CertificateSigningRequestDescriber{c},
@@ -3044,6 +3044,7 @@ func DescribeEvents(el *api.EventList, w PrefixWriter) {
 	}
 }
 
+/*
 // DeploymentDescriber generates information about a deployment.
 type DeploymentDescriber struct {
 	clientset.Interface
@@ -3112,7 +3113,7 @@ func describeDeployment(d *versionedextension.Deployment, selector labels.Select
 		return nil
 	})
 }
-
+*/
 func printReplicaSetsByLabels(matchingRSs []*versionedextension.ReplicaSet) string {
 	// Format the matching ReplicaSets into strings.
 	rsStrings := make([]string, 0, len(matchingRSs))

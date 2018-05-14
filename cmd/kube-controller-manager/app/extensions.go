@@ -21,13 +21,12 @@ limitations under the License.
 package app
 
 import (
-	"fmt"
-
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubernetes/pkg/controller/deployment"
+	//"k8s.io/kubernetes/pkg/controller/deployment"
 	"k8s.io/kubernetes/pkg/controller/replicaset"
 )
 
+/*
 func startDeploymentController(ctx ControllerContext) (bool, error) {
 	if !ctx.AvailableResources[schema.GroupVersionResource{Group: "extensions", Version: "v1beta1", Resource: "deployments"}] {
 		return false, nil
@@ -44,7 +43,7 @@ func startDeploymentController(ctx ControllerContext) (bool, error) {
 	go dc.Run(int(ctx.ComponentConfig.ConcurrentDeploymentSyncs), ctx.Stop)
 	return true, nil
 }
-
+*/
 func startReplicaSetController(ctx ControllerContext) (bool, error) {
 	if !ctx.AvailableResources[schema.GroupVersionResource{Group: "extensions", Version: "v1beta1", Resource: "replicasets"}] {
 		return false, nil
